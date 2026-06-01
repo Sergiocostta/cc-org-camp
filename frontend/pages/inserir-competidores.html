@@ -1,0 +1,44 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserir Competidores - CC-ORG-CAMP</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <main class="criacao-container">
+        <section class="criar-card">
+            <header class="cabecalho-criar">
+                <h2>Inscrição de Competidores</h2>
+                <p>Insira os nomes dos times ou atletas para gerar a chave</p>
+            </header>
+
+            <form id="formulario-competidores" class="formulario-criacao">
+                
+                <div id="inserir-competidores-container" class="lista-inserir-dinamica">
+
+                    <div class="grupo-campo">
+                        <label class="legenda-campo">Competidor-1</label>
+                        <input type="text" name="competidor-1" class="entrada-campo" placeholder="Nome do time ou atleta" required>
+                    </div>
+
+                    <div class="grupo-campo">
+                        <label class="legenda-campo">Competidor-2</label>
+                        <input type="text" name="competidor-2" class="entrada-campo" placeholder="Nome do time ou atleta" required>
+                    </div>
+
+                </div>
+
+                <div class="botoes-acoes">
+                    <button type="submit" class="botao-salvar">Gerar Chaveamento</button>
+                    <a href="home.html" class="botao-cancelar">Cancelar</a>
+                </div>
+            </form>
+
+        </section>
+
+    </main>
+</body>
+</html>
