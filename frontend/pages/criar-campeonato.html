@@ -1,0 +1,84 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Campeonato - CC-ORG-CAMP</title>
+</head>
+<body>
+    <main class="criacao-container">
+
+        <section class="criar-card">
+
+            <header class="cabecalho-criar"> 
+                <h2>Criar Novo Campeonato</h2>
+                <p>Preencha os dados abaixo para começar a organização.</p>
+            </header>
+
+            <form id="formulario-criacao" class="formulario-criacao">
+                
+                <div class="grupo-campo">
+                    <label for="tipo-evento" class="legenda-campo">Tipo de Evento</label>
+                    <select id="tipo-evento" class="legenda-campo" class="selecao campo" required>
+                        <option value="" disabled selected>Selecione o tipo</option>
+                        <option value="esporte">Esporte Coletivo (Futbol, Vôlei, etc.)</option>
+                        <option value="luta">Artes Marciais / Lutas (Jiu-Jitsu, Boxe, etc.)</option>
+                    </select>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="nome-campeonato" class="legenda-campo">Nome do Torneio / Evento</label>
+                    <input 
+                        type="text"
+                        id="nome-campeonato"
+                        name="nome-campeonato"
+                        class="entrada-campo"
+                        placeholder="Ex: Copa Marcão 2026"
+                        required
+                    >
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="modalidade" class="legenda-campo">modalidade Específica</label>
+                    <input 
+                        type="text"
+                        id="modalidade"
+                        name="modalidade"
+                        class="entrada-campo"
+                        placeholder="Ex: Futbol de Campo, Jiu-Jitsu, Muay Thai"
+                        required
+                    >
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="categoria" class="legenda-campo">Categoria / Faixa / Peso</label>
+                    <input 
+                        type="text" 
+                        id="categoria"
+                        name="categoria"
+                        class="entrada-campo"
+                        placeholder="Ex: Faixa azul até 80kg sub20"
+                    >
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="qtd-competidores" class="legenda-campo">Quantidade de Competidores (Times ou Atletas)</label>
+                    <input
+                        type="number"
+                        id="qtd-competidores"
+                        name="qtd-competidores"
+                        class="entrada-campo"
+                        min="2"
+                        placeholder="Ex: 8, 12, 16, 32..."
+                        required
+                    >
+                </div>
+
+                <div class="botoes-acoes">
+                    <button type="submit" class="botao-salvar">Criar Campeonato</button>
+                    <a href="home.html" class="botao-cancelar">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
