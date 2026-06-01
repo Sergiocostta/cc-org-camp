@@ -1,0 +1,747 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
+
+/* ===== DESIGN TOKENS ===== */
+:root {
+    /* Backgrounds */
+    --clr-bg-base:        #f8f7f4;
+    --clr-bg-surface:     #ffffff;
+    --clr-bg-input:       #f8f7f4;
+
+    /* Bordas */
+    --clr-border:         rgba(0, 0, 0, 0.08);
+    --clr-border-hover:   rgba(0, 0, 0, 0.14);
+    --clr-border-focus:   #111110;
+
+    /* Texto */
+    --clr-text-primary:   #111110;
+    --clr-text-secondary: #6b6b67;
+    --clr-text-muted:     #a8a8a3;
+
+    /* Acento único — preto */
+    --clr-accent:         #111110;
+    --clr-accent-hover:   #2a2a28;
+    --clr-accent-fg:      #f8f7f4;
+
+    /* Semânticas */
+    --clr-success:        #2e7d4f;
+    --clr-success-bg:     #edf7f1;
+    --clr-danger:         #a32d2d;
+    --clr-danger-bg:      rgba(163, 45, 45, 0.08);
+
+    /* Tipografia */
+    --font-display: 'Playfair Display', serif;
+    --font-ui:      'DM Sans', sans-serif;
+    --font-mono:    'DM Mono', monospace;
+
+    /* Bordas arredondadas */
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  16px;
+
+    /* Transições */
+    --dur-fast:   120ms;
+    --dur-normal: 220ms;
+    --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Sombra */
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --clr-bg-base:        #111110;
+        --clr-bg-surface:     #1a1a18;
+        --clr-bg-input:       #111110;
+
+        --clr-border:         rgba(255, 255, 255, 0.08);
+        --clr-border-hover:   rgba(255, 255, 255, 0.13);
+        --clr-border-focus:   #f0ede8;
+
+        --clr-text-primary:   #f0ede8;
+        --clr-text-secondary: #8c8c88;
+        --clr-text-muted:     #555552;
+
+        --clr-accent:         #f0ede8;
+        --clr-accent-hover:   #ffffff;
+        --clr-accent-fg:      #111110;
+
+        --clr-success:        #5ec487;
+        --clr-success-bg:     rgba(46, 125, 79, 0.12);
+        --clr-danger:         #f09595;
+        --clr-danger-bg:      rgba(163, 45, 45, 0.15);
+    }
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    background-color: var(--clr-bg-base);
+    color: var(--clr-text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--clr-border-hover);
+    border-radius: 99px;
+}
+
+/* ===== SELEÇÃO ===== */
+::selection {
+    background: var(--clr-text-primary);
+    color: var(--clr-bg-base);
+}
+
+/* ===================================================
+   LOGIN E CADASTRO
+   =================================================== */
+
+.login-container,
+.cadastro-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.login-card,
+.cadastro-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--clr-bg-surface);
+    border: 0.5px solid var(--clr-border-hover);
+    border-radius: var(--radius-lg);
+    padding: 48px 44px;
+    box-shadow: var(--shadow-card);
+    animation: cardEntrada var(--dur-normal) var(--ease-out) both;
+}
+
+@keyframes cardEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cabecalho-login {
+    margin-bottom: 36px;
+}
+
+.titulo-login {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--clr-text-primary);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+}
+
+.subtitulo-login {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--clr-text-muted);
+    letter-spacing: 0.3px;
+}
+
+/* ===================================================
+   FORMULÁRIOS
+   =================================================== */
+
+.formulario-login,
+.formulario-cadastro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legenda-campo {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--clr-text-secondary);
+}
+
+.entrada-campo {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 0.5px solid var(--clr-border-hover);
+    background: var(--clr-bg-input);
+    color: var(--clr-text-primary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    outline: none;
+    transition:
+        border-color var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.entrada-campo::placeholder {
+    color: var(--clr-text-muted);
+}
+
+.entrada-campo:hover {
+    border-color: var(--clr-text-secondary);
+}
+
+.entrada-campo:focus {
+    border-color: var(--clr-border-focus);
+    box-shadow: 0 0 0 3px rgba(17, 17, 16, 0.07);
+}
+
+@media (prefers-color-scheme: dark) {
+    .entrada-campo:focus {
+        box-shadow: 0 0 0 3px rgba(240, 237, 232, 0.07);
+    }
+}
+
+/* Botão principal */
+.botao-entrar {
+    margin-top: 4px;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--clr-accent);
+    color: var(--clr-accent-fg);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition:
+        background var(--dur-fast),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+.botao-entrar:hover {
+    background: var(--clr-accent-hover);
+}
+
+.botao-entrar:active {
+    transform: scale(0.99);
+}
+
+/* Divisor com texto */
+.divisor-ou {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 0;
+    color: var(--clr-text-muted);
+    font-size: 12px;
+}
+
+.divisor-ou::before,
+.divisor-ou::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--clr-border);
+}
+
+.rodape-login {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--clr-text-muted);
+}
+
+.link-cadastro {
+    color: var(--clr-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--dur-fast);
+}
+
+.link-cadastro:hover {
+    color: var(--clr-text-primary);
+}
+
+/* ===================================================
+   HEADER / NAVEGAÇÃO
+   =================================================== */
+
+.cabecalho-topo {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(248, 247, 244, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.5px solid var(--clr-border);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cabecalho-topo {
+        background: rgba(17, 17, 16, 0.85);
+    }
+}
+
+.logo-sistema h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--clr-text-primary);
+    letter-spacing: -0.3px;
+}
+
+.navegacao-usuario {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--clr-text-muted);
+}
+
+.botao-sair {
+    padding: 7px 14px;
+    border: 0.5px solid var(--clr-border-hover);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--clr-text-secondary);
+    text-decoration: none;
+    transition:
+        border-color var(--dur-fast),
+        color var(--dur-fast);
+}
+
+.botao-sair:hover {
+    border-color: var(--clr-text-secondary);
+    color: var(--clr-text-primary);
+}
+
+/* ===================================================
+   PAINEL PRINCIPAL
+   =================================================== */
+
+.conteudo-painel {
+    padding: 44px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeSlide var(--dur-normal) var(--ease-out) both;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.barra-acoes {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 32px;
+    gap: 16px;
+}
+
+.titulo-secao {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--clr-text-primary);
+    letter-spacing: -0.3px;
+    line-height: 1;
+}
+
+.botao-criar-campeonato {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--clr-accent);
+    color: var(--clr-accent-fg);
+    text-decoration: none;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    transition:
+        background var(--dur-fast),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+.botao-criar-campeonato:hover {
+    background: var(--clr-accent-hover);
+}
+
+.botao-criar-campeonato:active {
+    transform: scale(0.99);
+}
+
+/* ===================================================
+   GRID DE CAMPEONATOS
+   =================================================== */
+
+.divisor-listas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.bloco-campeonatos {
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--clr-border);
+    background: var(--clr-bg-surface);
+}
+
+/* Título dos blocos */
+.campeonato-andamento,
+.campeonato-concluido {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.campeonato-andamento {
+    color: var(--clr-text-muted);
+}
+
+.campeonato-andamento::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--clr-success);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+.campeonato-concluido {
+    color: var(--clr-text-muted);
+}
+
+.campeonato-concluido::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--clr-text-muted);
+}
+
+.grade-campeonatos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ===================================================
+   CARD DE CAMPEONATO
+   =================================================== */
+
+.card-campeonato {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--clr-border);
+    background: var(--clr-bg-base);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition:
+        border-color var(--dur-fast),
+        background var(--dur-fast);
+}
+
+.card-campeonato:hover {
+    border-color: var(--clr-border-hover);
+    background: var(--clr-bg-surface);
+}
+
+.card-campeonato .nome-campeonato {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--clr-text-primary);
+    margin-bottom: 2px;
+}
+
+.card-campeonato .meta-campeonato {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Badges */
+.badge-status {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.badge-ativo {
+    background: var(--clr-success-bg);
+    color: var(--clr-success);
+}
+
+.badge-concluido {
+    background: transparent;
+    color: var(--clr-text-muted);
+    border: 0.5px solid var(--clr-border-hover);
+}
+
+/* ===================================================
+   ESTADO VAZIO
+   =================================================== */
+
+.estado-vazio {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--clr-text-muted);
+    font-size: 13px;
+    border: 0.5px dashed var(--clr-border);
+    border-radius: var(--radius-md);
+}
+
+/* ===================================================
+   MENSAGENS
+   =================================================== */
+
+.mensagem-erro {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--clr-danger-bg);
+    border: 0.5px solid rgba(163, 45, 45, 0.2);
+    color: var(--clr-danger);
+    font-size: 13px;
+    font-family: var(--font-ui);
+}
+
+.mensagem-sucesso {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--clr-success-bg);
+    border: 0.5px solid rgba(46, 125, 79, 0.2);
+    color: var(--clr-success);
+    font-size: 13px;
+    font-family: var(--font-ui);
+}
+
+/* ===================================================
+   UTILITÁRIOS
+   =================================================== */
+
+.divisor {
+    border: none;
+    border-top: 0.5px solid var(--clr-border);
+    margin: 24px 0;
+}
+
+/* ===================================================
+   RESPONSIVO
+   =================================================== */
+
+
+
+/* ===================================================
+   ACESSIBILIDADE
+   =================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--clr-border-focus);
+    outline-offset: 3px;
+}
+
+/* ===================================================
+   CHAVEAMENTO
+   =================================================== */
+
+.chaveamento-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-torneio {
+    flex: 1;
+    max-width: 400px;
+    background: var(--clr-bg-surface);
+    border: 0.5px solid var(--clr-border);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+}
+
+.fase-torneio h3 {
+    margin-top: 0;
+    color: var(--clr-text-secondary);
+    border-bottom: 0.5px solid var(--clr-border);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.card-jogo {
+    background: var(--clr-bg-base);
+    border: 0.5px solid var(--clr-border);
+    border-radius: var(--radius-sm);
+    padding: 15px;
+    margin-bottom: 16px;
+}
+
+.linha-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+    color: var(--clr-text-primary);
+}
+
+.entrada-placar {
+    width: 60px;
+    padding: 6px;
+    border: 0.5px solid var(--clr-border-hover);
+    border-radius: var(--radius-sm);
+    background: var(--clr-bg-input);
+    color: var(--clr-text-primary);
+    font-family: var(--font-mono);
+    text-align: center;
+    font-weight: 500;
+    outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.entrada-placar:focus {
+    border-color: var(--clr-border-focus);
+}
+
+.divisor-vs {
+    text-align: center;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--clr-text-muted);
+    margin: 10px 0;
+}
+
+.botao-salvar-placar {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px;
+    background: var(--clr-accent);
+    color: var(--clr-accent-fg);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+}
+
+.botao-salvar-placar:hover {
+    background: var(--clr-accent-hover);
+}
+
+.botao-salvar-placar:active {
+    transform: scale(0.99);
+}
+
+.botao-salvar-placar:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Banner de Campeão */
+.banner-campeao {
+    background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+    border: 1px solid #eab308;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(234, 179, 8, 0.2);
+}
+
+.banner-campeao h2 {
+    margin: 0 0 5px 0;
+    color: #854d0e;
+    font-family: var(--font-display);
+}

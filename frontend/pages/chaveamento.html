@@ -1,96 +1,14 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chaveamento e Resultados - CC-ORG-CAMP</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <style>
-        .chaveamento-container {
-            display: flex;
-            gap: 40px;
-            margin-top: 30px;
-            align-items: center;
-            justify-content: center;
-        }
-        .fase-torneio {
-            flex: 1;
-            max-width: 400px;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .fase-torneio h3 {
-            margin-top: 0;
-            color: #333;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .card-jogo {
-            background: #fdfdfd;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .linha-time {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 8px 0;
-            font-size: 14pt;
-        }
-        .entrada-placar {
-            width: 60px;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .divisor-vs {
-            text-align: center;
-            font-weight: bold;
-            color: #888;
-            margin: 10px 0;
-        }
-        .botao-salvar-placar {
-            width: 100%;
-            margin-top: 10px;
-            padding: 8px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .botao-salvar-placar:hover {
-            background-color: #1d4ed8;
-        }
-        .botao-salvar-placar:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        /* Banner de Campeão integrado na mesma tela */
-        .banner-campeao {
-            background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
-            border: 2px solid #eab308;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(234, 179, 8, 0.2);
-        }
-        .banner-campeao h2 {
-            margin: 0 0 5px 0;
-            color: #854d0e;
-        }
-    </style>
+    
 </head>
 <body>
 
@@ -106,7 +24,7 @@
     <main class="conteudo-painel" style="padding: 20px;">
         
         <section id="secao-resultado-final" class="banner-campeao" style="display: none;">
-            <h2>🏆 GRANDE CAMPEÃO 🏆</h2>
+            <h2>GRANDE CAMPEÃO</h2>
             <h1 id="nome-do-campeao" style="color: #0f172a; margin: 5px 0 0 0;">Nome do Time</h1>
         </section>
 
@@ -115,7 +33,7 @@
             <button id="btn-encerrar-torneio" class="botao-salvar" style="display: none; background-color: #10b981; margin: 0;">Encerrar Campeonato</button>
         </section>
 
-        <div class="container-chaveamento">
+        <div class="chaveamento-container">
             
             <div class="fase-torneio">
                 <h3>Semifinais</h3>
