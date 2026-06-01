@@ -9,35 +9,35 @@ const headers = {
     'Authorization': process.env.CHALLONGE_API_KEY
 }
 
-// função base
 async function request(method, path, body = null){
     const res = await fetch(`${BASE_URL}${path}`, {
         method,
         headers,
         body: body ? JSON.stringify(body) : null
     })
+    if (!res.ok) {
+        const erro = await res.text()
+        throw new Error(`Challonge ${method} ${path} → ${res.status}: ${erro}`)
+    }
     return res.json()
 }
 
 // torneios 
-const listarTorneios = () => request('GET', '/tournaments')
-const criarTorneio = (nome, tipo) => request('POST', '/tournaments', {
+const listarTorneios      = ()                => request('GET', '/tournaments')
+const criarTorneio        = (nome, tipo)      => request('POST', '/tournaments', {
     data: { type: 'Tournament', attributes: { name: nome, tournament_type: tipo } }
 })
-
-// participantes
-const listarParticipantes = (torneioId) => request('GET', `/tournaments/${torneioId}/participants`)
-const criarParticipante = (torneioId, nome) => request('POST', `tournaments/${torneioId}/participants`, {
+const iniciarTorneio      = (torneioId)       => request('POST', `/tournaments/${torneioId}/start`)
+const listarParticipantes = (torneioId)       => request('GET',  `/tournaments/${torneioId}/participants`)
+const criarParticipante   = (torneioId, nome) => request('POST', `/tournaments/${torneioId}/participants`, {
     data: { type: 'Participant', attributes: { name: nome } }
 })
-
-// partidas
-const listarPartidas = torneioId => request('GET', `tournaments/${torneioId}/matches`)
-
+const listarPartidas      = (torneioId)       => request('GET',  `/tournaments/${torneioId}/matches`)
 
 module.exports = {
     listarTorneios,
     criarTorneio,
+    iniciarTorneio,
     listarParticipantes,
     criarParticipante,
     listarPartidas

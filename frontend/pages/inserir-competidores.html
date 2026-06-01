@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,39 +7,139 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .lista-inserir-dinamica { display:flex; flex-direction:column; gap:10px; }
+        .linha-competidor { display:flex; align-items:center; gap:10px; }
+        .num-competidor { font-family:var(--font-mono); font-size:12px; color:var(--clr-text-muted); min-width:24px; text-align:right; }
+        .btn-remover { width:32px; height:32px; border:0.5px solid var(--clr-border-hover); border-radius:var(--radius-sm); background:transparent; color:var(--clr-text-muted); font-size:18px; cursor:pointer; flex-shrink:0; transition:border-color var(--dur-fast), color var(--dur-fast); }
+        .btn-remover:hover { border-color:var(--clr-danger); color:var(--clr-danger); }
+        .btn-adicionar { margin-top:4px; padding:9px; border:0.5px dashed var(--clr-border-hover); border-radius:var(--radius-sm); background:transparent; color:var(--clr-text-muted); font-family:var(--font-ui); font-size:13px; cursor:pointer; width:100%; transition:border-color var(--dur-fast), color var(--dur-fast); }
+        .btn-adicionar:hover { border-color:var(--clr-text-secondary); color:var(--clr-text-primary); }
+        .sorteio-resultado { margin-top:24px; padding:20px; border:0.5px solid var(--clr-border); border-radius:var(--radius-md); background:var(--clr-bg-surface); }
+        .sorteio-lista { display:flex; flex-direction:column; gap:6px; list-style:none; }
+        .sorteio-item { display:flex; align-items:center; gap:12px; font-size:14px; padding:8px 12px; border-radius:var(--radius-sm); background:var(--clr-bg-base); }
+        .sorteio-seed { font-family:var(--font-mono); font-size:11px; color:var(--clr-text-muted); min-width:20px; }
+    </style>
 </head>
 <body>
-    <main class="criacao-container">
-        <section class="criar-card">
-            <header class="cabecalho-criar">
-                <h2>Inscrição de Competidores</h2>
-                <p>Insira os nomes dos times ou atletas para gerar a chave</p>
+    <header class="cabecalho-topo">
+        <div class="logo-sistema"><h2>CC-ORG-CAMP</h2></div>
+        <nav class="navegacao-usuario">
+            <a href="home.html" class="botao-sair">← Voltar</a>
+        </nav>
+    </header>
+
+    <main class="conteudo-painel">
+        <section style="max-width:560px; margin:0 auto;">
+            <header style="margin-bottom:28px;">
+                <h1 class="titulo-secao" id="titulo-torneio">Inscrição de Competidores</h1>
+                <p style="color:var(--clr-text-muted); font-size:14px; margin-top:6px;">Insira os nomes. O sorteio das chaves é automático.</p>
             </header>
 
-            <form id="formulario-competidores" class="formulario-criacao">
-                
-                <div id="inserir-competidores-container" class="lista-inserir-dinamica">
+            <div id="msg-erro"    class="mensagem-erro"    style="display:none; margin-bottom:16px;"></div>
+            <div id="msg-sucesso" class="mensagem-sucesso"  style="display:none; margin-bottom:16px;"></div>
 
-                    <div class="grupo-campo">
-                        <label class="legenda-campo">Competidor-1</label>
-                        <input type="text" name="competidor-1" class="entrada-campo" placeholder="Nome do time ou atleta" required>
-                    </div>
-
-                    <div class="grupo-campo">
-                        <label class="legenda-campo">Competidor-2</label>
-                        <input type="text" name="competidor-2" class="entrada-campo" placeholder="Nome do time ou atleta" required>
-                    </div>
-
-                </div>
-
-                <div class="botoes-acoes">
-                    <button type="submit" class="botao-salvar">Gerar Chaveamento</button>
-                    <a href="home.html" class="botao-cancelar">Cancelar</a>
+            <form id="formulario-competidores">
+                <div id="inserir-competidores-container" class="lista-inserir-dinamica"></div>
+                <button type="button" class="btn-adicionar" onclick="adicionarCampo()">+ Adicionar competidor</button>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button type="submit" id="btn-sortear" class="botao-entrar" style="flex:1">Sortear Chaves e Salvar</button>
+                    <a href="home.html" class="botao-sair" style="display:flex; align-items:center;">Cancelar</a>
                 </div>
             </form>
 
+            <div id="sorteio-resultado" class="sorteio-resultado" style="display:none;">
+                <p style="font-size:11px; font-weight:500; letter-spacing:1.2px; text-transform:uppercase; color:var(--clr-text-muted); margin-bottom:14px;">Ordem das chaves após sorteio</p>
+                <ol id="sorteio-lista" class="sorteio-lista"></ol>
+                <div style="margin-top:16px;">
+                    <a href="home.html" class="botao-entrar" style="display:inline-block; text-decoration:none; padding:10px 20px;">Ver todos os campeonatos</a>
+                </div>
+            </div>
         </section>
-
     </main>
+
+    <script>
+        const API = 'http://localhost:3000'
+        const params     = new URLSearchParams(window.location.search)
+        const torneioId  = params.get('torneio_id')
+        const nomeTorneio = params.get('nome')
+
+        if (nomeTorneio) document.getElementById('titulo-torneio').textContent = decodeURIComponent(nomeTorneio)
+        if (!torneioId) {
+            document.getElementById('msg-erro').textContent = 'ID do torneio não encontrado. Volte e crie um campeonato primeiro.'
+            document.getElementById('msg-erro').style.display = 'block'
+            document.getElementById('btn-sortear').disabled = true
+        }
+
+        let contador = 0
+        function adicionarCampo() {
+            contador++
+            const container = document.getElementById('inserir-competidores-container')
+            const div = document.createElement('div')
+            div.className = 'linha-competidor'
+            div.id = `linha-${contador}`
+            div.innerHTML = `
+                <span class="num-competidor">${contador}</span>
+                <input type="text" name="competidor" class="entrada-campo" placeholder="Nome do time ou atleta" style="flex:1" required>
+                <button type="button" class="btn-remover" onclick="removerCampo('linha-${contador}')">×</button>`
+            container.appendChild(div)
+        }
+
+        function removerCampo(id) {
+            document.getElementById(id)?.remove()
+            document.querySelectorAll('.linha-competidor .num-competidor').forEach((el, i) => el.textContent = i + 1)
+        }
+
+        adicionarCampo()
+        adicionarCampo()
+
+        document.getElementById('formulario-competidores').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const btn     = document.getElementById('btn-sortear')
+            const msgErro = document.getElementById('msg-erro')
+            const msgOk   = document.getElementById('msg-sucesso')
+            msgErro.style.display = msgOk.style.display = 'none'
+
+            const competidores = [...document.querySelectorAll('#inserir-competidores-container input[name="competidor"]')]
+                .map(i => i.value.trim()).filter(Boolean)
+
+            if (competidores.length < 2) {
+                msgErro.textContent = 'Insira ao menos 2 competidores.'
+                msgErro.style.display = 'block'
+                return
+            }
+
+            btn.disabled = true
+            btn.textContent = 'Sorteando e salvando...'
+
+            try {
+                const res = await fetch(`${API}/torneios/${torneioId}/participantes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ competidores })
+                })
+                const data = await res.json()
+                if (!res.ok) throw new Error(data.erro || 'Erro ao salvar')
+
+                await fetch(`${API}/torneios/${torneioId}/iniciar`, { method: 'POST' })
+
+                msgOk.textContent = data.mensagem
+                msgOk.style.display = 'block'
+
+                document.getElementById('sorteio-lista').innerHTML = data.sorteio.map((nome, i) =>
+                    `<li class="sorteio-item"><span class="sorteio-seed">${i + 1}</span><span>${nome}</span></li>`
+                ).join('')
+
+                document.getElementById('formulario-competidores').style.display = 'none'
+                document.querySelector('.btn-adicionar').style.display = 'none'
+                document.getElementById('sorteio-resultado').style.display = 'block'
+            } catch (err) {
+                msgErro.textContent = err.message
+                msgErro.style.display = 'block'
+                btn.disabled = false
+                btn.textContent = 'Sortear Chaves e Salvar'
+            }
+        })
+    </script>
 </body>
 </html>

@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Principal - CC-ORG-CAMP</title>
-
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
 </head>
 <body>
-
     <header class="cabecalho-topo">
-        <div class="logo-sistema">
-            <h2>CC-ORG-CAMP</h2>
-        </div>
+        <div class="logo-sistema"><h2>CC-ORG-CAMP</h2></div>
         <nav class="navegacao-usuario">
-            <span>Olá, <span id="nome-usuario-logado"></span></span>
+            <span>Olá, <span id="nome-usuario-logado">Usuário</span></span>
             <a href="../index.html" class="botao-sair">Sair</a>
         </nav>
     </header>
@@ -25,27 +20,63 @@
     <main class="conteudo-painel">
         <section class="barra-acoes">
             <h1 class="titulo-secao">Seus Campeonatos</h1>
-            <a href="criar-campeonato.html" class="botao-criar-campeonato">Criar novo campeonato</a>
+            <a href="criar-campeonato.html" class="botao-criar-campeonato">+ Criar novo campeonato</a>
         </section>
+
+        <div id="mensagem-erro" class="mensagem-erro" style="display:none; margin-bottom:16px;"></div>
 
         <div class="divisor-listas">
             <section class="bloco-campeonatos">
                 <h2 class="campeonato-andamento">Em andamento</h2>
-
                 <div id="lista-em-andamento" class="grade-campeonatos">
+                    <div class="estado-vazio">Carregando...</div>
                 </div>
             </section>
-
             <section class="bloco-campeonatos">
-                <h2 class="campeonato-concluido">Concluidos</h2>
-
+                <h2 class="campeonato-concluido">Concluídos</h2>
                 <div id="lista-concluidos" class="grade-campeonatos">
-                    </div>
+                    <div class="estado-vazio">Carregando...</div>
+                </div>
             </section>
-
         </div>
-
     </main>
-    
+
+    <script>
+        const API = 'http://localhost:3000'
+
+        function renderCard(t) {
+            return `
+                <a href="inserir-competidores.html?torneio_id=${t.id}&nome=${encodeURIComponent(t.nome)}"
+                   class="card-campeonato">
+                    <div>
+                        <p class="nome-campeonato">${t.nome}</p>
+                        <p class="meta-campeonato">${t.participantes} participantes · ${t.tipo}</p>
+                    </div>
+                    <span class="badge-status ${t.status === 'complete' ? 'badge-concluido' : 'badge-ativo'}">
+                        ${t.status === 'complete' ? 'Concluído' : 'Em andamento'}
+                    </span>
+                </a>`
+        }
+
+        async function carregarTorneios() {
+            const elAnd  = document.getElementById('lista-em-andamento')
+            const elConc = document.getElementById('lista-concluidos')
+            const elErro = document.getElementById('mensagem-erro')
+            try {
+                const res = await fetch(`${API}/torneios`)
+                if (!res.ok) throw new Error()
+                const { em_andamento, concluidos } = await res.json()
+                elAnd.innerHTML  = em_andamento.length ? em_andamento.map(renderCard).join('') : '<div class="estado-vazio">Nenhum campeonato em andamento.</div>'
+                elConc.innerHTML = concluidos.length   ? concluidos.map(renderCard).join('')   : '<div class="estado-vazio">Nenhum campeonato concluído ainda.</div>'
+            } catch {
+                elErro.textContent  = 'Não foi possível conectar ao servidor. Verifique se o backend está rodando.'
+                elErro.style.display = 'block'
+                elAnd.innerHTML  = '<div class="estado-vazio">—</div>'
+                elConc.innerHTML = '<div class="estado-vazio">—</div>'
+            }
+        }
+
+        carregarTorneios()
+    </script>
 </body>
 </html>
