@@ -9,6 +9,7 @@ const headers = {
     'Authorization': process.env.CHALLONGE_API_KEY
 }
 
+// função base
 async function request(method, path, body = null){
     const res = await fetch(`${BASE_URL}${path}`, {
         method,
@@ -18,4 +19,26 @@ async function request(method, path, body = null){
     return res.json()
 }
 
-module.exports = { request }
+// torneios 
+const listarTorneios = () => request('GET', '/tournaments')
+const criarTorneio = (nome, tipo) => request('POST', '/tournaments', {
+    data: { type: 'Tournament', attributes: { name: nome, tournament_type: tipo } }
+})
+
+// participantes
+const listarParticipantes = (torneioId) => request('GET', `/tournaments/${torneioId}/participants`)
+const criarParticipante = (torneioId, nome) => request('POST', `tournaments/${torneioId}/participants`, {
+    data: { type: 'Participant', attributes: { name: nome } }
+})
+
+// partidas
+const listarPartidas = torneioId => request('GET', `tournaments/${torneioId}/matches`)
+
+
+module.exports = {
+    listarTorneios,
+    criarTorneio,
+    listarParticipantes,
+    criarParticipante,
+    listarPartidas
+}
