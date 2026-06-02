@@ -40,6 +40,12 @@ def login():
         print(f"Erro ao processar login: {e}")
         return jsonify({'success': False, 'message': 'Erro ao processar login'}), 500
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
 @app.route('/cadastro')
 def cadastro():
     return render_template('cadastro.html')
