@@ -59,6 +59,7 @@ def cadastrar_usuario(nome, email, senha):
             conn.commit()
             return True
         except sqlite3.IntegrityError:
+            print(f"Erro: O email '{email}' já está cadastrado.")
             return False
         except Exception as e:
             print(f"Erro ao cadastrar usuário: {e}")

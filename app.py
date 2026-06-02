@@ -16,6 +16,9 @@ app.secret_key = 'cc-org-camp'
 
 @app.route('/')
 def index():
+    if 'user_id' in session:
+        return redirect('/home')
+
     return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
@@ -57,7 +60,10 @@ def cadastro():
             if db.usuarioExiste(email):
                 return jsonify({'success': False, 'message': 'Email já cadastrado'}), 400
 
-            return jsonify({'success': True, 'message': 'Usuário não tem cadastro ainda'}), 200
+            if db.cadastrar_usuario(nome, email, senha):
+                return jsonify({'success': True, 'message': 'Usuário cadastrado com sucesso'}), 201
+            else:
+                return jsonify({'success': False, 'message': 'Erro ao cadastrar usuário'}), 500
 
 
         except Exception as e:
