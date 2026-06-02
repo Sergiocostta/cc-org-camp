@@ -25,7 +25,7 @@
                     <label for="novo-usuario" class="legenda-campo">Escolha um usuario</label>
                     <input 
                         type="text"
-                        id="novo-usuario"
+                        id="nome"
                         name="novo-usuario"
                         class="entrada-campo"
                         placeholder="Ex: marcos123"
@@ -49,7 +49,7 @@
                     <label for="nova-senha" class="legenda-campo">Crie uma senha</label>
                     <input
                         type="password"
-                        id="nova-senha"
+                        id="senha"
                         name="nova-senha"
                         class="entrada-campo"
                         placeholder="Digite sua senha"
@@ -68,5 +68,6 @@
 
     </main>
     
+<script src="{{ url_for('static', filename='js/cadastro.js') }}" ></script>
 </body>
 </html>

@@ -4,7 +4,6 @@ import os
 import backend.services.database as db
 
 db.criarDB()
-db.tabelaUsuarios()
 
 load_dotenv()
 CHALLONGE_API_KEY = os.getenv('CHALLONGE_API_KEY')
@@ -46,8 +45,25 @@ def logout():
     return redirect('/')
 
 
-@app.route('/cadastro')
+@app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
+    if request.method == 'POST':
+        try:
+            dados = request.get_json()
+            nome = dados.get('nome')
+            email = dados.get('email')
+            senha = dados.get('senha')
+
+            if db.usuarioExiste(email):
+                return jsonify({'success': False, 'message': 'Email já cadastrado'}), 400
+
+            return jsonify({'success': True, 'message': 'Usuário não tem cadastro ainda'}), 200
+
+
+        except Exception as e:
+            print(f"Erro ao processar cadastro: {e}")
+            return jsonify({'success': False, 'message': 'Erro ao processar cadastro'}), 500
+
     return render_template('cadastro.html')
 
 @app.route('/home')

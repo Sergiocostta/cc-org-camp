@@ -14,7 +14,7 @@ def conectarDB():
 
 
 def criarDB():
-    tabelaUsuarios()
+    gerarTabelas()
     print(f"Banco de dados '{DB_NAME}' pronto.")
 
 
@@ -33,6 +33,21 @@ def tabelaUsuarios():
         except Exception as e:
             print(f"Erro ao criar tabela 'usuarios': {e}")
 
+def gerarTabelas():
+    tabelaUsuarios()
+
+def usuarioExiste(email):
+    with conectarDB() as conn:
+        try:
+            cursor = conn.execute(
+                'SELECT * FROM usuarios WHERE email = ?',
+                (email,)
+            )
+            return cursor.fetchone() is not None
+        
+        except Exception as e:
+            print(f"Erro ao verificar existência do usuário: {e}")
+            return False
 
 def cadastrar_usuario(nome, email, senha):
     with conectarDB() as conn:
