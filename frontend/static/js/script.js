@@ -1,30 +1,20 @@
-async function login() {
+document.getElementById('formulario-login').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-    const user = document.getElementById('usuario').value;
+    const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
 
-    try{
-        const resposta = await fetch('/login', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ usuario: user, senha: senha })
-        })
+    const resposta = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+    });
 
-        const data = await resposta.json();
+    const data = await resposta.json();
 
-        if (resposta.ok) {
-            localStorage.setItem('token', data.token);
-
-            window.location.href = '/home'
-        } else {
-            alert(data.message);
-        }
-    } catch (error) {
-        console.error('Erro:', error);
-        alert('Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.');
+    if (resposta.ok) {
+        window.location.href = '/home';
+    } else {
+        alert(data.message);
     }
-    
-
-}
+});
