@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { executar, buscarUm, buscarTodos } = require('../database');
+const verificarToken = require('../middlewares/verificarToken');
 const {
     criarTorneio,
     listarTorneios,
@@ -21,11 +22,8 @@ function shuffle(arr) {
 }
 
 // Lista todos os campeonatos do banco do usuário + status atualizado do Challonge
-router.get('/', async (req, res) => {
-    const { usuario_id } = req.query;
-
-    if (!usuario_id)
-        return res.status(400).json({ erro: 'Informe o usuario_id.' });
+router.get('/', verificarToken, async (req, res) => { // <-- TOKEN AQUI
+    const usuario_id = req.usuarioId; // <-- PEGA DO TOKEN, NÃO MAIS DA URL
 
     try {
         // Busca campeonatos salvos no banco local
@@ -44,7 +42,7 @@ router.get('/', async (req, res) => {
                 url: data.attributes.full_challonge_url,
             }));
         } catch {
-// Se Challonge falhar, retorna só os dados locais
+            // Se Challonge falhar, retorna só os dados locais
         }
 
         // Mescla dados locais com status do Challonge
@@ -69,17 +67,19 @@ router.get('/', async (req, res) => {
 });
 
 // Detalhe de um campeonato com seus competidores e partidas
-router.get('/:id', async (req, res) => {
+router.get('/:id', verificarToken, async (req, res) => { // <-- TOKEN AQUI
+    const usuario_id = req.usuarioId;
+
     try {
         const campeonato = await buscarUm(
-            'SELECT * FROM campeonatos WHERE id = ?',
-            [req.params.id]
+            'SELECT * FROM campeonatos WHERE id = ? AND usuario_id = ?', // Protegido para só o dono ver
+            [req.params.id, usuario_id]
         );
 
         if (!campeonato)
-            return res.status(404).json({ erro: 'Campeonato não encontrado.' });
+            return res.status(404).json({ erro: 'Campeonato não encontrado ou acesso negado.' });
 
-// Busca competidores inscritos (com posição do sorteio)
+        // Busca competidores inscritos (com posição do sorteio)
         const competidores = await buscarTodos(
             `SELECT c.id, c.nome, i.posicao
              FROM competidores c
@@ -89,7 +89,7 @@ router.get('/:id', async (req, res) => {
             [req.params.id]
         );
 
-// Busca partidas salvas no banco
+        // Busca partidas salvas no banco
         const partidas = await buscarTodos(
             `SELECT p.*,
                     c1.nome AS competidor1_nome,
@@ -104,7 +104,7 @@ router.get('/:id', async (req, res) => {
             [req.params.id]
         );
 
-// Se tiver challonge_id, busca o bracket atualizado
+        // Se tiver challonge_id, busca o bracket atualizado
         let bracket = null;
         if (campeonato.challonge_id) {
             try {
@@ -154,10 +154,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // Cria campeonato no banco SQLite e no Challonge ao mesmo tempo
-router.post('/', async (req, res) => {
-    const { usuario_id, tipo_evento, nome, modalidade, categoria, quantidade_competidores } = req.body;
+router.post('/', verificarToken, async (req, res) => { // <-- TOKEN AQUI
+    const { tipo_evento, nome, modalidade, categoria, quantidade_competidores } = req.body;
+    const usuario_id = req.usuarioId; // <-- PEGA DO TOKEN 
 
-    if (!usuario_id || !tipo_evento || !nome || !modalidade || !quantidade_competidores)
+    if (!tipo_evento || !nome || !modalidade || !quantidade_competidores)
         return res.status(400).json({ erro: 'Preencha todos os campos obrigatórios.' });
 
     if (quantidade_competidores < 2)
@@ -176,7 +177,7 @@ router.post('/', async (req, res) => {
 
         const campeonatoId = resultado.id;
 
-// 2. Cria no Challonge e salva o ID retornado
+        // 2. Cria no Challonge e salva o ID retornado
         let challongeId  = null;
         let challongeUrl = null;
         try {
@@ -209,22 +210,22 @@ router.post('/', async (req, res) => {
 });
 
 // Recebe lista de nomes → sorteia → salva no banco → envia pro Challonge
-router.post('/:id/competidores', async (req, res) => {
-    const { competidores } = req.body; // array de strings
+router.post('/:id/competidores', verificarToken, async (req, res) => { // <-- TOKEN AQUI
+    const { competidores } = req.body; 
 
     if (!Array.isArray(competidores) || competidores.length < 2)
         return res.status(400).json({ erro: 'Envie ao menos 2 competidores.' });
 
     try {
         const campeonato = await buscarUm(
-            'SELECT * FROM campeonatos WHERE id = ?',
-            [req.params.id]
+            'SELECT * FROM campeonatos WHERE id = ? AND usuario_id = ?',
+            [req.params.id, req.usuarioId]
         );
 
         if (!campeonato)
-            return res.status(404).json({ erro: 'Campeonato não encontrado.' });
+            return res.status(404).json({ erro: 'Campeonato não encontrado ou acesso negado.' });
 
-// ── SORTEIO ALEATÓRIO ─────────────────────────────────────────────
+        // ── SORTEIO ALEATÓRIO ─────────────────────────────────────────────
         const sorteados = shuffle(competidores.map(n => n.trim()).filter(Boolean));
 
         const inseridos = [];
@@ -247,7 +248,7 @@ router.post('/:id/competidores', async (req, res) => {
             inseridos.push({ id: comp.id, nome, posicao: i + 1 });
         }
 
-// ── ENVIA PRO CHALLONGE (se tiver challonge_id) ───────────────────
+        // ── ENVIA PRO CHALLONGE (se tiver challonge_id) ───────────────────
         let challongeOk = false;
         if (campeonato.challonge_id) {
             try {
@@ -262,7 +263,7 @@ router.post('/:id/competidores', async (req, res) => {
             }
         }
 
-// ── GERA PARTIDAS DA PRIMEIRA RODADA NO BANCO LOCAL ───────────────
+        // ── GERA PARTIDAS DA PRIMEIRA RODADA NO BANCO LOCAL ───────────────
         for (let i = 0; i < inseridos.length - 1; i += 2) {
             const c1 = inseridos[i];
             const c2 = inseridos[i + 1] ?? null;
@@ -289,7 +290,7 @@ router.post('/:id/competidores', async (req, res) => {
 });
 
 // Atualiza status do campeonato no banco (ex: concluir)
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', verificarToken, async (req, res) => { // <-- TOKEN AQUI
     const { status } = req.body;
     const statusValidos = ['em_andamento', 'concluido', 'cancelado'];
 
@@ -298,8 +299,8 @@ router.patch('/:id/status', async (req, res) => {
 
     try {
         await executar(
-            'UPDATE campeonatos SET status = ? WHERE id = ?',
-            [status, req.params.id]
+            'UPDATE campeonatos SET status = ? WHERE id = ? AND usuario_id = ?',
+            [status, req.params.id, req.usuarioId]
         );
         res.json({ mensagem: 'Status atualizado.' });
     } catch (err) {
