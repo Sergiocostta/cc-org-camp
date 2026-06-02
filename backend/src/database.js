@@ -1,7 +1,7 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-
+// Define o caminho para o arquivo do banco de dados SQLite
 const caminhoBanco = path.join(__dirname, '..', 'campeonatos.sqlite');
 
 const db = new sqlite3.Database(caminhoBanco, (erro) => {
