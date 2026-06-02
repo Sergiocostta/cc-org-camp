@@ -1,5 +1,3 @@
-
-
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
 
 /* ===== DESIGN TOKENS ===== */
@@ -621,4 +619,129 @@ body {
 :focus-visible {
     outline: 2px solid var(--clr-border-focus);
     outline-offset: 3px;
+}
+
+/* ===================================================
+   CHAVEAMENTO
+   =================================================== */
+
+.chaveamento-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-torneio {
+    flex: 1;
+    max-width: 400px;
+    background: var(--clr-bg-surface);
+    border: 0.5px solid var(--clr-border);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+}
+
+.fase-torneio h3 {
+    margin-top: 0;
+    color: var(--clr-text-secondary);
+    border-bottom: 0.5px solid var(--clr-border);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.card-jogo {
+    background: var(--clr-bg-base);
+    border: 0.5px solid var(--clr-border);
+    border-radius: var(--radius-sm);
+    padding: 15px;
+    margin-bottom: 16px;
+}
+
+.linha-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+    color: var(--clr-text-primary);
+}
+
+.entrada-placar {
+    width: 60px;
+    padding: 6px;
+    border: 0.5px solid var(--clr-border-hover);
+    border-radius: var(--radius-sm);
+    background: var(--clr-bg-input);
+    color: var(--clr-text-primary);
+    font-family: var(--font-mono);
+    text-align: center;
+    font-weight: 500;
+    outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.entrada-placar:focus {
+    border-color: var(--clr-border-focus);
+}
+
+.divisor-vs {
+    text-align: center;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--clr-text-muted);
+    margin: 10px 0;
+}
+
+.botao-salvar-placar {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px;
+    background: var(--clr-accent);
+    color: var(--clr-accent-fg);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+}
+
+.botao-salvar-placar:hover {
+    background: var(--clr-accent-hover);
+}
+
+.botao-salvar-placar:active {
+    transform: scale(0.99);
+}
+
+.botao-salvar-placar:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Banner de Campeão */
+.banner-campeao {
+    background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+    border: 1px solid #eab308;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(234, 179, 8, 0.2);
+}
+
+.banner-campeao h2 {
+    margin: 0 0 5px 0;
+    color: #854d0e;
+    font-family: var(--font-display);
 }
