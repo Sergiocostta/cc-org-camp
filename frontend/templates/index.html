@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CC-ORG-CAMP</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -51,17 +51,13 @@
         </form>
 
         <footer class="rodape-login">
-            <p>Não tem uma conta? <a href="pages/cadastro.html" class="link-cadastro">Cadastre-se aqui</a></p>
+            <p>Não tem uma conta? <a href="/cadastro" class="link-cadastro">Cadastre-se aqui</a></p>
         </footer>
 
 
     </section>
-
-
    </main>
-   
-   
- 
+   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     
 </body>
 </html>
