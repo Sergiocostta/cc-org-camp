@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, session, redirect
 import backend.services.database as db
+import backend.services.challonge as api
 
 db.criarDB()
 
@@ -68,6 +69,16 @@ def cadastro():
 
     return render_template('cadastro.html')
 
+@app.route('/torneios')
+def listar_torneios():
+    try:
+        torneios = api.listar_torneios()
+        return jsonify(torneios.json()), torneios.status_code
+    
+    except Exception as e:
+        print(f"Erro ao listar torneios: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao listar torneios'}), 500
+
 @app.route('/home')
 def home():
     if 'user_id' not in session:
@@ -83,11 +94,7 @@ def criar_campeonato():
     if request.method == 'POST':
         try:
             dados = request.get_json()
-            usuario = {
-                'id': session.get('user_id'),
-                'nome': session.get('usuario_nome'),
-                'email': session.get('usuario_email')
-            }
+            userId = session.get('user_id')
 
 
 

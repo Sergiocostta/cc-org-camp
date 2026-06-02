@@ -39,7 +39,9 @@ def tabelaCampeonatos():
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS campeonatos (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    url_api TEXT
+                    url_api TEXT,
+                    user_id INTEGER,
+                    FOREIGN KEY (user_id) REFERENCES usuarios(id)
                 )
             ''')
             conn.commit()
@@ -93,13 +95,10 @@ def verificar_usuario(email, senha):
             return None
 
 
-def criar_campeonato(usuario, dados):
+def novo_campeonato(userId, dados):
     with conectarDB() as conn:
         try:
-            conn.execute (
-                
-            )
-            conn.commit()
+            
             return True
         
         except Exception as e:
