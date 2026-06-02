@@ -1,12 +1,8 @@
 from flask import Flask, render_template, jsonify, request, session, redirect
-from dotenv import load_dotenv
-import os
 import backend.services.database as db
 
 db.criarDB()
 
-load_dotenv()
-CHALLONGE_API_KEY = os.getenv('CHALLONGE_API_KEY')
 
 app = Flask(__name__,
             static_folder='frontend/static',
@@ -78,6 +74,30 @@ def home():
         return redirect('/')
     
     return render_template('home.html', usuario=session.get('usuario_nome'))
+
+@app.route('/criar-campeonato', methods=['GET', 'POST'])
+def criar_campeonato():
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    if request.method == 'POST':
+        try:
+            dados = request.get_json()
+            usuario = {
+                'id': session.get('user_id'),
+                'nome': session.get('usuario_nome'),
+                'email': session.get('usuario_email')
+            }
+
+
+
+
+        except Exception as e:
+            print(f"Erro ao processar criação de campeonato: {e}")
+            return jsonify({'success': False, 'message': 'Erro ao processar criação de campeonato'}), 500
+
+    
+    return render_template('criar-campeonato.html')
 
 
 if __name__ == '__main__':

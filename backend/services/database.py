@@ -23,18 +23,32 @@ def tabelaUsuarios():
         try:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS usuarios (
-                    id    INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome  TEXT    NOT NULL,
-                    email TEXT    UNIQUE NOT NULL,
-                    senha TEXT    NOT NULL
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nome TEXT NOT NULL,
+                    email TEXT UNIQUE NOT NULL,
+                    senha TEXT NOT NULL
                 );
             ''')
             conn.commit()
         except Exception as e:
             print(f"Erro ao criar tabela 'usuarios': {e}")
 
+def tabelaCampeonatos():
+    with conectarDB() as conn:
+        try: 
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS campeonatos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    url_api TEXT
+                )
+            ''')
+            conn.commit()
+        except Exception as e:
+            print(f"Erro ao criar tabela 'campeonatos': {e}")
+
 def gerarTabelas():
     tabelaUsuarios()
+    tabelaCampeonatos()
 
 def usuarioExiste(email):
     with conectarDB() as conn:
@@ -78,6 +92,19 @@ def verificar_usuario(email, senha):
             print(f"Erro ao verificar usuário: {e}")
             return None
 
+
+def criar_campeonato(usuario, dados):
+    with conectarDB() as conn:
+        try:
+            conn.execute (
+                
+            )
+            conn.commit()
+            return True
+        
+        except Exception as e:
+            print(f"Erro ao criar campeonato: {e}")
+            return False
 
 if __name__ == "__main__":
     criarDB()
