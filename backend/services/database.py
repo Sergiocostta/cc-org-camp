@@ -113,3 +113,16 @@ def novo_campeonato(userId, url, qtd):
         except Exception as e:
             print(f"Erro ao criar campeonato: {e}")
             return False
+
+def filtrar_campeonatos(userId):
+    with conectarDB() as conn:
+        try:
+            cursor = conn.execute(
+                'SELECT url_api FROM campeonatos WHERE user_id = ?',
+                (userId,)
+            )
+            return [row['url_api'] for row in cursor.fetchall()]
+        
+        except Exception as e:
+            print(f'Erro ao filtrar os campeonatos: {e}')
+            return False

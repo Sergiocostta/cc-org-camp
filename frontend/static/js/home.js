@@ -22,18 +22,18 @@ async function carregarTorneios(){
         if (emAndamento.length > 0){
             containerEmAndamento.innerHTML = ''
         } else {
-            containerEmAndamento.textContent = 'Sem campeonatos concluídos'
+            containerEmAndamento.textContent = 'Sem campeonatos em andamento'
         }
         if (concluidos.length > 0){
             containerConcluidos.innerHTML = ''
         } else {
-            containerConcluidos.textContent = 'Sem campeonatos em andamento'
+            containerConcluidos.textContent = 'Sem campeonatos concluídos'
         }
 
         
         emAndamento.forEach(torneio => {
             containerEmAndamento.innerHTML += `
-                <a href="/torneios/${torneio.tournament.id}">
+                <a href="/torneios/${torneio.tournament.url}">
                     <h3>${torneio.tournament.name}</h3>
                 </a>
             `
@@ -41,7 +41,7 @@ async function carregarTorneios(){
 
         concluidos.forEach(torneio => {
             containerConcluidos.innerHTML += `
-                <a href="/torneios/${torneio.tournament.id}">
+                <a href="/torneios/${torneio.tournament.url}">
                     <h3>${torneio.tournament.name}</h3>
                 </a>
             `
