@@ -15,11 +15,10 @@ document.getElementById('formulario-login').addEventListener('submit', async fun
     if (resposta.ok) {
         sessionStorage.clear()
 
-        const torneios = await fetch('/torneios')
-        const listaTorneios = await torneios.json()
-        sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+        const listaTorneios = await fetch('/req')
+        const torneios = await listaTorneios.json()
 
-        
+        sessionStorage.setItem('torneios', JSON.stringify(torneios))
 
         window.location.href = '/home'
     } else {

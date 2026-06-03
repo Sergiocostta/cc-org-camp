@@ -113,8 +113,8 @@ def criar_campeonato():
     return render_template('criar-campeonato.html')
 
 
-@app.route('/torneios', methods=['GET'])
-def listar_torneios():
+@app.route('/req', methods=['GET'])
+def get_challonge():
     if 'user_id' not in session:
         return redirect('/')
     
@@ -124,18 +124,19 @@ def listar_torneios():
 
         torneios = api.listar_torneios()
 
-        filtrados = [t for t in torneios.json() if t['tournament']['url'] in urls]
+        torneiosFiltr = [t for t in torneios.json() if t['tournament']['url'] in urls]
+        for t in torneiosFiltr:
+            url = t['tournament']['url']
+            resposta = api.listar_participantes(url)
+            t['tournament']['participants'] = resposta.json()
 
-        return jsonify(filtrados), 200
+        return jsonify(torneiosFiltr), 200
 
     
     except Exception as e:
-        print(f"Erro ao listar torneios: {e}")
-        return jsonify({'success': False, 'message': 'Erro ao listar campeonato'}), 500
+        print(f"Erro ao fazer a requisição na api: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao fazer a requisição na api'}), 500
 
-'''@app.route('/participantes', methods=['GET'])
-def listar_participantes():
-    '''
 
 @app.route('/torneios/<torneioUrl>', methods=['GET'])
 def torneio(torneioUrl):

@@ -30,5 +30,5 @@ def listar_torneios():
 def criar_torneio(dados):
     return challonge('POST', '/tournaments', json={'tournament': dados})
 
-def listar_participantes(torneioUrl):
-    return challonge('GET', f'/tournaments/{torneioUrl}/participants')
+def listar_participantes(torneioId):
+    return challonge('GET', f'/tournaments/{torneioId}/participants')
