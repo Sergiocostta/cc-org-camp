@@ -23,6 +23,10 @@ document.getElementById('formulario-criacao').addEventListener('submit', async f
 
     const data = await resposta.json()
     if (resposta.ok) {
+        const torneios = await fetch('/torneios')
+        const listaTorneios = await torneios.json()
+        sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+        
         window.location.href = '/home'
     }
 })

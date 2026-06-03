@@ -17,7 +17,7 @@
             <h2>CC-ORG-CAMP</h2>
         </div>
         <nav class="navegacao-usuario">
-            <a href="home.html" class="botao-cancelar">Voltar ao Painel</a>
+            <a href="/home" class="botao-cancelar">Voltar ao Painel</a>
         </nav>
     </header>
 
@@ -29,7 +29,7 @@
         </section>
 
         <section class="barra-acoes" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 class="titulo-secao" style="margin: 0;">Chaveamento do Torneio</h1>
+            <h1 class="titulo-secao" style="margin: 0;">{{ nome_torneio }}</h1>
             <button id="btn-encerrar-torneio" class="botao-salvar" style="display: none; background-color: #10b981; margin: 0;">Encerrar Campeonato</button>
         </section>
 
@@ -93,6 +93,6 @@
 
         </div>
     </main>
-
+<script src="{{ url_for('static', filename='js/chaveamento.js') }}"></script>
 </body>
 </html>

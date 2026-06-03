@@ -14,6 +14,7 @@ app = Flask(__name__,
 
 app.secret_key = 'cc-org-camp'
 
+
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -72,23 +73,6 @@ def cadastro():
 
     return render_template('cadastro.html')
 
-@app.route('/torneios', methods=['GET'])
-def listar_torneios():
-    try:
-        userId = session.get('user_id')
-        urls = db.filtrar_campeonatos(userId)
-
-        torneios = api.listar_torneios()
-
-        filtrados = [t for t in torneios.json() if t['tournament']['url'] in urls]
-
-        return jsonify(filtrados), 200
-
-    
-    except Exception as e:
-        print(f"Erro ao listar torneios: {e}")
-        return jsonify({'success': False, 'message': 'Erro ao listar campeonato'}), 500
-
 
 @app.route('/home')
 def home():
@@ -109,7 +93,7 @@ def criar_campeonato():
             url_api = dados.get('url')
             qtdParticipantes = int(dados.get('qtdCompetidores'))
 
-            torneio = api.criar_torneio({
+            api.criar_torneio({
                 'name': dados.get('name'),
                 'url': url_api,
                 'tournament_type': 'single elimination'
@@ -125,6 +109,60 @@ def criar_campeonato():
 
     
     return render_template('criar-campeonato.html')
+
+
+@app.route('/torneios', methods=['GET'])
+def listar_torneios():
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    try:
+        userId = session.get('user_id')
+        urls = db.filtrar_campeonatos(userId)
+
+        torneios = api.listar_torneios()
+
+        filtrados = [t for t in torneios.json() if t['tournament']['url'] in urls]
+
+        return jsonify(filtrados), 200
+
+    
+    except Exception as e:
+        print(f"Erro ao listar torneios: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao listar campeonato'}), 500
+
+
+@app.route('/torneios/<torneioUrl>', methods=['GET'])
+def torneio(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    try:
+        userId = session.get('user_id')
+        urls_torneios = db.filtrar_campeonatos(userId)
+        
+
+        if torneioUrl not in urls_torneios:
+            return redirect('/home')
+        
+        
+        
+        return render_template('chaveamento.html')
+
+    
+    except Exception as e:
+        print(f"Erro ao abrir o torneio: {e}")
+
+
+
+
+@app.errorhandler(404)
+def pagina_nao_encontrada(error):
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    return redirect('/home')
+
 
 
 if __name__ == '__main__':

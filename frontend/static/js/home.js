@@ -1,7 +1,6 @@
 async function carregarTorneios(){
     try {
-        const resposta = await fetch('/torneios')
-        const listaTorneios = await resposta.json()
+        const listaTorneios = JSON.parse(sessionStorage.getItem('torneios'))
 
         const containerEmAndamento = document.getElementById('lista-em-andamento')
         const containerConcluidos = document.getElementById('lista-concluidos')
@@ -34,7 +33,7 @@ async function carregarTorneios(){
         emAndamento.forEach(torneio => {
             containerEmAndamento.innerHTML += `
                 <a href="/torneios/${torneio.tournament.url}">
-                    <h3>${torneio.tournament.name}</h3>
+                    <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
                 </a>
             `
         })
@@ -42,7 +41,7 @@ async function carregarTorneios(){
         concluidos.forEach(torneio => {
             containerConcluidos.innerHTML += `
                 <a href="/torneios/${torneio.tournament.url}">
-                    <h3>${torneio.tournament.name}</h3>
+                    <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
                 </a>
             `
         })

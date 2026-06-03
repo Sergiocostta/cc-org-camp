@@ -13,6 +13,12 @@ document.getElementById('formulario-login').addEventListener('submit', async fun
     const data = await resposta.json()
 
     if (resposta.ok) {
+        sessionStorage.clear()
+
+        const torneios = await fetch('/torneios')
+        const listaTorneios = await torneios.json()
+        sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+
         window.location.href = '/home'
     } else {
         alert(data.message)
