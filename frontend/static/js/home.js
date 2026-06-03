@@ -6,9 +6,42 @@ async function carregarTorneios(){
         const containerEmAndamento = document.getElementById('lista-em-andamento')
         const containerConcluidos = document.getElementById('lista-concluidos')
         
-        
-        const emAndamentos = []
         const concluidos = []
+        const emAndamento = []
+
+        listaTorneios.forEach(torneio => {
+            if (
+                torneio.tournament.state === 'complete'
+            ) {
+                concluidos.push(torneio)
+            } else {
+                emAndamento.push(torneio)
+            }
+        })
+
+        if (emAndamento.length > 0){
+            containerEmAndamento.innerHTML = ''
+        }
+        if (concluidos.length > 0){
+            containerConcluidos.innerHTML = ''
+        }
+
+        
+        emAndamento.forEach(torneio => {
+            containerEmAndamento.innerHTML += `
+                <a href="/torneios/${torneio.tournament.id}">
+                    <h3>${torneio.tournament.name}</h3>
+                </a>
+            `
+        })
+
+        concluidos.forEach(torneio => {
+            containerConcluidos.innerHTML += `
+                <a href="/torneios/${torneio.tournament.id}">
+                    <h3>${torneio.tournament.name}</h3>
+                </a>
+            `
+        })
 
 
     } catch (error) {
