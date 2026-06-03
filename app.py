@@ -24,6 +24,8 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
+    if 'user_id' in session:
+        return redirect('/home')
     try:
         dados = request.get_json()
         email = dados.get('email')
@@ -131,6 +133,9 @@ def listar_torneios():
         print(f"Erro ao listar torneios: {e}")
         return jsonify({'success': False, 'message': 'Erro ao listar campeonato'}), 500
 
+'''@app.route('/participantes', methods=['GET'])
+def listar_participantes():
+    '''
 
 @app.route('/torneios/<torneioUrl>', methods=['GET'])
 def torneio(torneioUrl):
@@ -141,13 +146,11 @@ def torneio(torneioUrl):
         userId = session.get('user_id')
         urls_torneios = db.filtrar_campeonatos(userId)
         
-
         if torneioUrl not in urls_torneios:
             return redirect('/home')
         
-        
-        
         return render_template('chaveamento.html')
+
 
     
     except Exception as e:
