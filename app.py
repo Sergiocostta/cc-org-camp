@@ -138,6 +138,30 @@ def get_challonge():
         return jsonify({'success': False, 'message': 'Erro ao fazer a requisição na api'}), 500
 
 
+@app.route('/torneios/<torneioUrl>/verif')
+def verificar_participantes(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    userId = session.get('user_id')
+    urls_torneios = db.filtrar_campeonatos(userId)
+    
+    if torneioUrl not in urls_torneios:
+        return redirect('/home')
+    
+    try:
+        torneio = request.get_json()
+        print(torneio)
+
+
+
+
+
+    except Exception as e:
+        print(f"Erro ao verificar o torneio: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao verificar o torneio'})
+
+
 @app.route('/torneios/<torneioUrl>', methods=['GET'])
 def torneio(torneioUrl):
     if 'user_id' not in session:
@@ -156,6 +180,28 @@ def torneio(torneioUrl):
     
     except Exception as e:
         print(f"Erro ao abrir o torneio: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao abrir o torneio'})
+
+
+@app.route('/torneios/<torneioUrl>/add-participante', methods=['GET'])
+def add_participante(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    try:
+        userId = session.get('user_id')
+        urls_torneios = db.filtrar_campeonatos(userId)
+        
+        if torneioUrl not in urls_torneios:
+            return redirect('/home')
+        
+        return render_template('inserir-competidores.html')
+
+    
+    except Exception as e:
+        print(f'Erro ao abrir página de adicionar os participantes: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao abrir página de adicionar os participantes'})
+
 
 
 

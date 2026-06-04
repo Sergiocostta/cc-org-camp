@@ -32,9 +32,9 @@ async function carregarTorneios(){
         
         emAndamento.forEach(torneio => {
             containerEmAndamento.innerHTML += `
-                <a href="/torneios/${torneio.tournament.url}">
+                <button onclick="verificarParticipantes(${JSON.stringify(torneio)})">
                     <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
-                </a>
+                </button>
             `
         })
 
@@ -50,6 +50,19 @@ async function carregarTorneios(){
     } catch (error) {
         console.error('Erro ao carregar torneios:', error)
     }
+}
+
+async function verificarParticipantes(torneio){
+
+    torneio = JSON.parse(torneio)
+    url = torneio.tournament.url
+
+    resposta = await fetch(`/torneios/${url}/verif`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(torneio)
+    })
+
 }
 
 carregarTorneios()
