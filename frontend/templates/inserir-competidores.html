@@ -25,26 +25,27 @@
     <header class="cabecalho-topo">
         <div class="logo-sistema"><h2>CC-ORG-CAMP</h2></div>
         <nav class="navegacao-usuario">
-            <a href="home.html" class="botao-sair">← Voltar</a>
+            <a href="/home" class="botao-sair">← Voltar</a>
         </nav>
     </header>
 
     <main class="conteudo-painel">
         <section style="max-width:560px; margin:0 auto;">
             <header style="margin-bottom:28px;">
-                <h1 class="titulo-secao" id="titulo-torneio">Inscrição de Competidores</h1>
+                <h1 id="titulo-torneio"></h1>
+                <h1 class="titulo-secao">Inscrição de Competidores</h1>
                 <p style="color:var(--clr-text-muted); font-size:14px; margin-top:6px;">Insira os nomes. O sorteio das chaves é automático.</p>
             </header>
 
-            <div id="msg-erro"    class="mensagem-erro"    style="display:none; margin-bottom:16px;"></div>
-            <div id="msg-sucesso" class="mensagem-sucesso"  style="display:none; margin-bottom:16px;"></div>
+            <div id="msg-erro" class="mensagem-erro" style="display:none; margin-bottom:16px;"></div>
+            <div id="msg-sucesso" class="mensagem-sucesso" style="display:none; margin-bottom:16px;"></div>
 
             <form id="formulario-competidores">
                 <div id="inserir-competidores-container" class="lista-inserir-dinamica"></div>
-                <button type="button" class="btn-adicionar" onclick="adicionarCampo()">+ Adicionar competidor</button>
+                <button type="button" class="btn-adicionar">+ Adicionar competidor</button>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button type="submit" id="btn-sortear" class="botao-entrar" style="flex:1">Sortear Chaves e Salvar</button>
-                    <a href="home.html" class="botao-sair" style="display:flex; align-items:center;">Cancelar</a>
+                    <a href="/home" class="botao-sair" style="display:flex; align-items:center;">Cancelar</a>
                 </div>
             </form>
 
@@ -52,10 +53,12 @@
                 <p style="font-size:11px; font-weight:500; letter-spacing:1.2px; text-transform:uppercase; color:var(--clr-text-muted); margin-bottom:14px;">Ordem das chaves após sorteio</p>
                 <ol id="sorteio-lista" class="sorteio-lista"></ol>
                 <div style="margin-top:16px;">
-                    <a href="home.html" class="botao-entrar" style="display:inline-block; text-decoration:none; padding:10px 20px;">Ver todos os campeonatos</a>
+                    <a href="/home" class="botao-entrar" style="display:inline-block; text-decoration:none; padding:10px 20px;">Ver todos os campeonatos</a>
                 </div>
             </div>
         </section>
     </main>
+    
+<script src="{{ url_for('static', filename='js/add-competidores.js') }}"></script>
 </body>
 </html>
