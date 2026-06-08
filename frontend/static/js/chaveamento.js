@@ -14,6 +14,16 @@ async function carregarChaveamento() {
     const resposta = await fetch(`/torneios/${url}/partidas`)
     const partidas = await resposta.json()
 
+    if (torneio.tournament.state === 'complete') {
+        const participantes = torneio.tournament.participants
+        const campeao = participantes.find(p => p.participant.final_rank === 1)
+
+        if (campeao) {
+            document.getElementById('secao-resultado-final').style.display = 'block'
+            document.getElementById('nome-do-campeao').innerText = campeao.participant.name
+        }
+    }
+
     const container = document.querySelector('.chaveamento-container')
     container.innerHTML = ''
 

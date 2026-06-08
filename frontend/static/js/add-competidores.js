@@ -61,12 +61,15 @@ document.getElementById('formulario-competidores').addEventListener('submit', as
         const dataIniciar = await iniciar.json()
 
         if (iniciar.ok) {
-            const torneios = await fetch('/req')
-            const listaTorneios = await torneios.json()
-            sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+            const listaTorneios = JSON.parse(sessionStorage.getItem('torneios'))
+            const torneio = listaTorneios.find(t => t.tournament.url === url)
+            
+            torneio.tournament.state = 'in_progress'
+            torneio.tournament.participants = data.participantes
 
+            sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
             window.location.href = `/torneios/${url}`
-        }
+            }
     }
     else {
         document.getElementById('msg-erro').style.display = 'block'
