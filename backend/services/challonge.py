@@ -45,3 +45,6 @@ def listar_partidas(torneio_url):
 
 def atualizar_partida(torneio_url, partida_id, dados):
     return challonge('PUT', f'/tournaments/{torneio_url}/matches/{partida_id}', json={'match': dados})
+
+def finalizar_torneio(torneio_url):
+    return challonge('POST', f'/tournaments/{torneio_url}/finalize')

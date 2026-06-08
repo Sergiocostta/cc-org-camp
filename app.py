@@ -83,6 +83,34 @@ def home():
     
     return render_template('home.html', usuario=session.get('usuario_nome'))
 
+
+@app.route('/req', methods=['GET'])
+def get_challonge():
+    if 'user_id' not in session:
+        return redirect('/')
+    
+    try:
+        userId = session.get('user_id')
+        urls = db.filtrar_campeonatos(userId)
+        print(f"urls no banco para user {userId}: {urls}")
+
+        torneios = api.listar_torneios()
+        print(f"urls na api: {[t['tournament']['url'] for t in torneios.json()]}")
+
+        torneiosFiltr = [t for t in torneios.json() if t['tournament']['url'] in urls]
+        for t in torneiosFiltr:
+            url = t['tournament']['url']
+            resposta = api.listar_participantes(url)
+            t['tournament']['participants'] = resposta.json()
+
+        return jsonify(torneiosFiltr), 200
+
+    
+    except Exception as e:
+        print(f"Erro ao fazer a requisição na api: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao fazer a requisição na api'}), 500
+
+
 @app.route('/criar-campeonato', methods=['GET', 'POST'])
 def criar_campeonato():
     if 'user_id' not in session:
@@ -101,6 +129,7 @@ def criar_campeonato():
             })
 
             db.novo_campeonato(userId, url_api)
+            print(f"campeonato salvo: {url_api} para user {userId}")
 
             return jsonify({'success': True, 'url':url_api}), 201
 
@@ -110,31 +139,6 @@ def criar_campeonato():
 
     
     return render_template('criar-campeonato.html')
-
-
-@app.route('/req', methods=['GET'])
-def get_challonge():
-    if 'user_id' not in session:
-        return redirect('/')
-    
-    try:
-        userId = session.get('user_id')
-        urls = db.filtrar_campeonatos(userId)
-
-        torneios = api.listar_torneios()
-
-        torneiosFiltr = [t for t in torneios.json() if t['tournament']['url'] in urls]
-        for t in torneiosFiltr:
-            url = t['tournament']['url']
-            resposta = api.listar_participantes(url)
-            t['tournament']['participants'] = resposta.json()
-
-        return jsonify(torneiosFiltr), 200
-
-    
-    except Exception as e:
-        print(f"Erro ao fazer a requisição na api: {e}")
-        return jsonify({'success': False, 'message': 'Erro ao fazer a requisição na api'}), 500
 
 
 @app.route('/torneios/<torneioUrl>/verif', methods=['GET', 'POST'])
@@ -245,6 +249,22 @@ def atualizar_partida(torneioUrl, partidaId):
         return jsonify({'success': False, 'message': 'Erro ao atualizar partida'}), 500
 
 
+@app.route('/torneios/<torneioUrl>/encerrar', methods=['POST'])
+def encerrar_torneio(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    try:
+        api.finalizar_torneio(torneioUrl)
+
+        participantes = api.listar_participantes(torneioUrl).json()
+        campeao = next((p['participant']['name'] for p in participantes if p['participant']['final_rank'] == 1), None)
+
+        api.listar_torneios()
+        return jsonify({'campeao': campeao}), 200
+    
+    except Exception as e:
+        print(f'Erro ao encerrar torneio: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao encerrar torneio'}), 500
 
 
 
@@ -256,7 +276,6 @@ def pagina_nao_encontrada(error):
         return redirect('/')
     
     return redirect('/home')
-
 
 
 if __name__ == '__main__':

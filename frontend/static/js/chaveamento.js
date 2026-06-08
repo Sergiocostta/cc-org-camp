@@ -33,23 +33,36 @@ async function carregarChaveamento() {
             const player1 = participantes[jogo.player1_id] || 'A definir'
             const player2 = participantes[jogo.player2_id] || 'A definir'
             const concluido = jogo.state === 'complete'
+            const scores = jogo.scores_csv || '0-0'
+            const [score1, score2] = scores.split('-')
 
             fase.innerHTML += `
                 <div class="card-jogo">
-                    <form onsubmit="salvarPlacar(event, '${jogo.id}', ${jogo.player1_id}, ${jogo.player2_id})">
+                    ${concluido ? `
                         <div class="linha-time">
                             <span>${player1}</span>
-                            <input type="number" name="placar1" min="0" class="entrada-placar" ${concluido ? 'disabled' : ''} required>
+                            <span class="entrada-placar">${score1}</span>
                         </div>
                         <div class="divisor-vs">VS</div>
                         <div class="linha-time">
                             <span>${player2}</span>
-                            <input type="number" name="placar2" min="0" class="entrada-placar" ${concluido ? 'disabled' : ''} required>
+                            <span class="entrada-placar">${score2}</span>
                         </div>
-                        <button type="submit" class="botao-salvar-placar" ${concluido ? 'disabled' : ''}>
-                            ${concluido ? 'Concluído' : 'Salvar Placar'}
-                        </button>
-                    </form>
+                        <button class="botao-salvar-placar" disabled>Concluído</button>
+                    ` : `
+                        <form onsubmit="salvarPlacar(event, '${jogo.id}', ${jogo.player1_id}, ${jogo.player2_id})">
+                            <div class="linha-time">
+                                <span>${player1}</span>
+                                <input type="number" name="placar1" min="0" class="entrada-placar" required>
+                            </div>
+                            <div class="divisor-vs">VS</div>
+                            <div class="linha-time">
+                                <span>${player2}</span>
+                                <input type="number" name="placar2" min="0" class="entrada-placar" required>
+                            </div>
+                            <button type="submit" class="botao-salvar-placar">Salvar Placar</button>
+                        </form>
+                    `}
                 </div>
             `
         })
@@ -76,7 +89,42 @@ async function salvarPlacar(e, jogoId, player1Id, player2Id) {
 
     if (resposta.ok) {
         await carregarChaveamento()
+
+        const partidasResp = await fetch(`/torneios/${url}/partidas`)
+        const partidas = await partidasResp.json()
+
+        console.log('total partidas:', partidas.length)
+        console.log('states:', partidas.map(p => p.match.state))
+
+
+        const todasConcluidas = partidas.every(p => p.match.state === 'complete')
+        console.log('todas concluidas:', todasConcluidas)
+
+        if (todasConcluidas) {
+            document.getElementById('btn-encerrar-torneio').style.display = 'block'
+        }
     }
 }
+
+document.getElementById('btn-encerrar-torneio').addEventListener('click', async function() {
+    const resposta = await fetch(`/torneios/${url}/encerrar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+
+    const data = await resposta.json()
+
+    if (resposta.ok) {
+        sessionStorage.clear()
+        const torneios = await fetch('/req')
+        const listaTorneios = await torneios.json()
+        sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+
+        const campeao = data.campeao
+        document.getElementById('secao-resultado-final').style.display = 'block'
+        document.getElementById('nome-do-campeao').innerText = campeao
+        document.getElementById('btn-encerrar-torneio').style.display = 'none'
+    }
+})
 
 carregarChaveamento()

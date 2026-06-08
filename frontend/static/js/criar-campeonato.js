@@ -23,10 +23,20 @@ document.getElementById('formulario-criacao').addEventListener('submit', async f
 
     const data = await resposta.json()
     if (resposta.ok) {
-        const torneios = await fetch('/req')
-        const listaTorneios = await torneios.json()
-        sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
+        const torneiosAtuais = JSON.parse(sessionStorage.getItem('torneios')) || []
         
+        torneiosAtuais.push({
+            tournament: {
+                name: nomeCompleto,
+                url: url,
+                state: 'pending',
+                participants: [],
+                participants_count: 0,
+                tournament_type: 'single elimination'
+            }
+        })
+
+        sessionStorage.setItem('torneios', JSON.stringify(torneiosAtuais))
         window.location.href = '/home'
     }
 })

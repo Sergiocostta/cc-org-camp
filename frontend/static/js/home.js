@@ -33,15 +33,15 @@ async function carregarTorneios(){
         emAndamento.forEach(torneio => {
             containerEmAndamento.innerHTML += `
                 <button onclick="verificarParticipantes('${torneio.tournament.url}')">
-                    <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
+                    <h3>${torneio.tournament.name}</h3>
                 </button>
             `
         })
 
-        emAndamento.forEach(torneio => {
-            concluidos.innerHTML += `
+        concluidos.forEach(torneio => {
+            containerConcluidos.innerHTML += `
                 <button onclick="verificarParticipantes('${torneio.tournament.url}')">
-                    <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
+                    <h3>${torneio.tournament.name}</h3>
                 </button>
             `
         })
