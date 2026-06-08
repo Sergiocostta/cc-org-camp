@@ -279,4 +279,4 @@ def pagina_nao_encontrada(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
