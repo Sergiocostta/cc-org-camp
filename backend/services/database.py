@@ -7,12 +7,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 def conectarDB():
-    try:
-        conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
-        return conn
-    except Exception as e:
-        print(f"Erro ao conectar ao banco de dados: {e}")
-        return None
+    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
 
 
 def criarDB():
