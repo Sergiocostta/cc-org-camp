@@ -38,11 +38,11 @@ async function carregarTorneios(){
             `
         })
 
-        concluidos.forEach(torneio => {
-            containerConcluidos.innerHTML += `
-                <a href="/torneios/${torneio.tournament.url}">
+        emAndamento.forEach(torneio => {
+            concluidos.innerHTML += `
+                <button onclick="verificarParticipantes('${torneio.tournament.url}')">
                     <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
-                </a>
+                </button>
             `
         })
 

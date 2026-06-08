@@ -41,8 +41,10 @@
             <div id="msg-sucesso" class="mensagem-sucesso" style="display:none; margin-bottom:16px;"></div>
 
             <form id="formulario-competidores">
+                <ul id="lista-competidores">
+                </ul>
                 <div id="inserir-competidores-container" class="lista-inserir-dinamica"></div>
-                <button type="button" class="btn-adicionar">+ Adicionar competidor</button>
+                <button type="button" class="btn-adicionar" onclick="addCompetidores()">+ Adicionar competidor</button>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button type="submit" id="btn-sortear" class="botao-entrar" style="flex:1">Sortear Chaves e Salvar</button>
                     <a href="/home" class="botao-sair" style="display:flex; align-items:center;">Cancelar</a>

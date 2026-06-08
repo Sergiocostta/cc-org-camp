@@ -138,7 +138,7 @@ def get_challonge():
 
 
 @app.route('/torneios/<torneioUrl>/verif', methods=['GET', 'POST'])
-def verificar_participantes(torneioUrl):
+def verificar_status(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
     
@@ -150,10 +150,9 @@ def verificar_participantes(torneioUrl):
     
     try:
         torneio = request.get_json()
-        qtdPart = len(torneio['tournament']['participants'])
 
-        if qtdPart == 0:
-            return jsonify({'redirect': f'torneios/{torneioUrl}/add-participante'}), 200
+        if torneio['tournament']['state'] == 'pending':
+            return jsonify({'redirect': f'torneios/{torneioUrl}/participantes'}), 200
         
         return jsonify({'redirect': f'/torneios/{torneioUrl}'}), 200
 
@@ -161,6 +160,18 @@ def verificar_participantes(torneioUrl):
     except Exception as e:
         print(f"Erro ao verificar o torneio: {e}")
         return jsonify({'success': False, 'message': 'Erro ao verificar o torneio'})
+
+
+@app.route('/torneios/<torneioUrl>/iniciar', methods=['POST'])
+def iniciar_torneio(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    try:
+        resposta = api.iniciar_torneio(torneioUrl)
+        return jsonify(resposta.json()), resposta.status_code
+    except Exception as e:
+        print(f'Erro ao iniciar torneio: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao iniciar torneio'}), 500
 
 
 @app.route('/torneios/<torneioUrl>', methods=['GET'])
@@ -184,7 +195,7 @@ def torneio(torneioUrl):
         return jsonify({'success': False, 'message': 'Erro ao abrir o torneio'})
 
 
-@app.route('/torneios/<torneioUrl>/add-participante', methods=['GET'])
+@app.route('/torneios/<torneioUrl>/participantes', methods=['GET', 'POST'])
 def add_participante(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
@@ -195,6 +206,13 @@ def add_participante(torneioUrl):
         
         if torneioUrl not in urls_torneios:
             return redirect('/home')
+        
+        if request.method == 'POST':
+            dados = request.get_json()
+            participantes = dados.get('participantes')
+
+            resposta = api.adicionar_participantes_bulk(torneioUrl, participantes)
+            return jsonify({'participantes': resposta.json()}), 200
         
         return render_template('inserir-competidores.html')
 

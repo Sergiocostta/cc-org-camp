@@ -32,3 +32,10 @@ def criar_torneio(dados):
 
 def listar_participantes(torneioId):
     return challonge('GET', f'/tournaments/{torneioId}/participants')
+
+def adicionar_participantes_bulk(torneio_url, nomes):
+    participantes = [{'name': nome} for nome in nomes]
+    return challonge('POST', f'/tournaments/{torneio_url}/participants/bulk_add', json={'participants': participantes})
+
+def iniciar_torneio(torneioUrl):
+    return challonge('POST', f'/tournaments/{torneioUrl}/start')
