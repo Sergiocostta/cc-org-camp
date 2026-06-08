@@ -20,78 +20,21 @@
             <a href="/home" class="botao-cancelar">Voltar ao Painel</a>
         </nav>
     </header>
-
+    
     <main class="conteudo-painel" style="padding: 20px;">
         
         <section id="secao-resultado-final" class="banner-campeao" style="display: none;">
             <h2>GRANDE CAMPEÃO</h2>
-            <h1 id="nome-do-campeao" style="color: #0f172a; margin: 5px 0 0 0;">Nome do Time</h1>
+            <h1 id="nome-do-campeao"></h1>
         </section>
 
         <section class="barra-acoes" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 id="titulo" class="titulo-secao" style="margin: 0;">Seu Campeonato</h1>
-            <button id="btn-encerrar-torneio" class="botao-salvar" style="display: none; background-color: #10b981; margin: 0;">Encerrar Campeonato</button>
+            <h1 id="titulo" class="titulo-secao" style="margin: 0;"></h1>
+            <button id="btn-encerrar-torneio" class="botao-salvar" style="display: none;">Encerrar Campeonato</button>
         </section>
 
-        <div class="chaveamento-container">
-            
-            <div class="fase-torneio">
-                <h3>Semifinais</h3>
-                
-                <div class="card-jogo">
-                    <form id="form-jogo-1">
-                        <input type="hidden" name="partida_id" value="1">
-                        <div class="linha-time">
-                            <span>Time A</span>
-                            <input type="number" name="placar_time_a" min="0" class="entrada-placar" required>
-                        </div>
-                        <div class="divisor-vs">VS</div>
-                        <div class="linha-time">
-                            <span>Time B</span>
-                            <input type="number" name="placar_time_b" min="0" class="entrada-placar" required>
-                        </div>
-                        <button type="submit" class="botao-salvar-placar">Salvar Placar</button>
-                    </form>
-                </div>
+        <div class="chaveamento-container"></div>
 
-                <div class="card-jogo">
-                    <form id="form-jogo-2">
-                        <input type="hidden" name="partida_id" value="2">
-                        <div class="linha-time">
-                            <span>Time C</span>
-                            <input type="number" name="placar_time_c" min="0" class="entrada-placar" required>
-                        </div>
-                        <div class="divisor-vs">VS</div>
-                        <div class="linha-time">
-                            <span>Time D</span>
-                            <input type="number" name="placar_time_d" min="0" class="entrada-placar" required>
-                        </div>
-                        <button type="submit" class="botao-salvar-placar">Salvar Placar</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="fase-torneio">
-                <h3>Grande Final</h3>
-                
-                <div class="card-jogo">
-                    <form id="form-jogo-final">
-                        <input type="hidden" name="partida_id" value="3">
-                        <div class="linha-time">
-                            <span id="vencedor-j1" style="color: #888; font-style: italic;">Vencedor Jogo 1</span>
-                            <input type="number" name="placar_final_a" min="0" class="entrada-placar" disabled required>
-                        </div>
-                        <div class="divisor-vs">VS</div>
-                        <div class="linha-time">
-                            <span id="vencedor-j2" style="color: #888; font-style: italic;">Vencedor Jogo 2</span>
-                            <input type="number" name="placar_final_b" min="0" class="entrada-placar" disabled required>
-                        </div>
-                        <button type="submit" id="btn-salvar-final" class="botao-salvar-placar" disabled>Definir Campeão</button>
-                    </form>
-                </div>
-            </div>
-
-        </div>
     </main>
 <script src="{{ url_for('static', filename='js/chaveamento.js') }}"></script>
 </body>

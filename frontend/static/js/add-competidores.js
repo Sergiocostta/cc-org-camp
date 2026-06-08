@@ -63,7 +63,7 @@ document.getElementById('formulario-competidores').addEventListener('submit', as
         if (iniciar.ok) {
             const torneios = await fetch('/req')
             const listaTorneios = await torneios.json()
-            sessionStorage.setItem('torneios', JSOHN.stringify(listaTorneios))
+            sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
 
             window.location.href = `/torneios/${url}`
         }

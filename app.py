@@ -188,8 +188,6 @@ def torneio(torneioUrl):
         
         return render_template('chaveamento.html')
 
-
-    
     except Exception as e:
         print(f"Erro ao abrir o torneio: {e}")
         return jsonify({'success': False, 'message': 'Erro ao abrir o torneio'})
@@ -220,6 +218,33 @@ def add_participante(torneioUrl):
     except Exception as e:
         print(f'Erro ao abrir página de adicionar os participantes: {e}')
         return jsonify({'success': False, 'message': 'Erro ao abrir página de adicionar os participantes'})
+
+
+@app.route('/torneios/<torneioUrl>/partidas', methods=['GET'])
+def listar_partidas(torneioUrl):
+    if 'user_id' not in session:
+        return redirect('/')
+    try:
+        resposta = api.listar_partidas(torneioUrl)
+        return jsonify(resposta.json()), resposta.status_code
+    except Exception as e:
+        print(f'Erro ao listar partidas: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao listar partidas'}), 500
+
+
+@app.route('/torneios/<torneioUrl>/partidas/<int:partidaId>', methods=['PUT'])
+def atualizar_partida(torneioUrl, partidaId):
+    if 'user_id' not in session:
+        return redirect('/')
+    try:
+        dados = request.get_json()
+        resposta = api.atualizar_partida(torneioUrl, partidaId, dados)
+        return jsonify(resposta.json()), resposta.status_code
+    except Exception as e:
+        print(f'Erro ao atualizar partida: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao atualizar partida'}), 500
+
+
 
 
 
