@@ -147,7 +147,7 @@ def criar_campeonato():
     return render_template('criar-campeonato.html')
 
 
-@app.route('/torneios/<torneioUrl>/verif', methods=['GET'])
+@app.route('/torneios/<torneioUrl>/verif', methods=['GET', 'POST'])
 def verificar_status(torneioUrl):
     """
     Verifica o status do torneio na API Challonge.
