@@ -92,6 +92,12 @@ def get_challonge():
     try:
         userId = session.get('user_id')
         urls = db.filtrar_campeonatos(userId)
+        
+        # Tratamento: quando usuário não tem torneios
+        if not urls or urls is False:
+            print(f"Usuário {userId} não tem torneios")
+            return jsonify([]), 200
+        
         print(f"urls no banco para user {userId}: {urls}")
 
         torneios = api.listar_torneios()
@@ -141,8 +147,13 @@ def criar_campeonato():
     return render_template('criar-campeonato.html')
 
 
-@app.route('/torneios/<torneioUrl>/verif', methods=['GET', 'POST'])
+@app.route('/torneios/<torneioUrl>/verif', methods=['GET'])
 def verificar_status(torneioUrl):
+    """
+    Verifica o status do torneio na API Challonge.
+    - Se estado == 'pending': redireciona para adicionar participantes
+    - Caso contrário: redireciona para ver o chaveamento
+    """
     if 'user_id' not in session:
         return redirect('/')
     
@@ -150,26 +161,48 @@ def verificar_status(torneioUrl):
     urls_torneios = db.filtrar_campeonatos(userId)
     
     if torneioUrl not in urls_torneios:
-        return redirect('/home')
+        return jsonify({'success': False, 'message': 'Acesso negado'}), 403
     
     try:
-        torneio = request.get_json()
-
-        if torneio['tournament']['state'] == 'pending':
-            return jsonify({'redirect': f'torneios/{torneioUrl}/participantes'}), 200
+        # Chamar API para obter informações do torneio
+        resposta = api.listar_torneios()
+        torneios = resposta.json()
         
-        return jsonify({'redirect': f'/torneios/{torneioUrl}'}), 200
-
+        # Buscar o torneio atual
+        torneio_encontrado = next(
+            (t for t in torneios if t['tournament']['url'] == torneioUrl), 
+            None
+        )
+        
+        if not torneio_encontrado:
+            return jsonify({'success': False, 'message': 'Torneio não encontrado'}), 404
+        
+        estado = torneio_encontrado['tournament']['state']
+        
+        # Retornar URL de redirecionamento apropriada
+        if estado == 'pending':
+            redirect_url = f'/torneios/{torneioUrl}/participantes'
+        else:
+            redirect_url = f'/torneios/{torneioUrl}'
+        
+        return jsonify({'success': True, 'redirect': redirect_url}), 200
 
     except Exception as e:
-        print(f"Erro ao verificar o torneio: {e}")
-        return jsonify({'success': False, 'message': 'Erro ao verificar o torneio'})
+        print(f"Erro ao verificar status do torneio: {e}")
+        return jsonify({'success': False, 'message': 'Erro ao verificar status do torneio'}), 500
 
 
 @app.route('/torneios/<torneioUrl>/iniciar', methods=['POST'])
 def iniciar_torneio(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
+    
+    # Verificação de autorização: usuário é o dono?
+    userId = session.get('user_id')
+    urls_torneios = db.filtrar_campeonatos(userId)
+    if torneioUrl not in urls_torneios:
+        return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+    
     try:
         resposta = api.iniciar_torneio(torneioUrl)
         return jsonify(resposta.json()), resposta.status_code
@@ -206,28 +239,42 @@ def add_participante(torneioUrl):
         userId = session.get('user_id')
         urls_torneios = db.filtrar_campeonatos(userId)
         
+        # Verificação de autorização: retornar 403 para consistency
         if torneioUrl not in urls_torneios:
+            if request.method == 'POST':
+                return jsonify({'success': False, 'message': 'Acesso negado'}), 403
             return redirect('/home')
         
         if request.method == 'POST':
             dados = request.get_json()
             participantes = dados.get('participantes')
-
+            
+            # Validação: verificar se participantes foi enviado
+            if not participantes:
+                return jsonify({'success': False, 'message': 'Lista de participantes não fornecida'}), 400
+            
             resposta = api.adicionar_participantes_bulk(torneioUrl, participantes)
-            return jsonify({'participantes': resposta.json()}), 200
+            return jsonify({'success': True, 'participantes': resposta.json()}), 200
         
+        # GET: retorna template HTML
         return render_template('inserir-competidores.html')
 
-    
     except Exception as e:
-        print(f'Erro ao abrir página de adicionar os participantes: {e}')
-        return jsonify({'success': False, 'message': 'Erro ao abrir página de adicionar os participantes'})
+        print(f'Erro ao adicionar participantes: {e}')
+        return jsonify({'success': False, 'message': 'Erro ao adicionar participantes'}), 500
 
 
 @app.route('/torneios/<torneioUrl>/partidas', methods=['GET'])
 def listar_partidas(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
+    
+    # Verificação de autorização: usuário é o dono?
+    userId = session.get('user_id')
+    urls_torneios = db.filtrar_campeonatos(userId)
+    if torneioUrl not in urls_torneios:
+        return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+    
     try:
         resposta = api.listar_partidas(torneioUrl)
         return jsonify(resposta.json()), resposta.status_code
@@ -240,6 +287,13 @@ def listar_partidas(torneioUrl):
 def atualizar_partida(torneioUrl, partidaId):
     if 'user_id' not in session:
         return redirect('/')
+    
+    # Verificação de autorização: usuário é o dono?
+    userId = session.get('user_id')
+    urls_torneios = db.filtrar_campeonatos(userId)
+    if torneioUrl not in urls_torneios:
+        return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+    
     try:
         dados = request.get_json()
         resposta = api.atualizar_partida(torneioUrl, partidaId, dados)
@@ -253,6 +307,13 @@ def atualizar_partida(torneioUrl, partidaId):
 def encerrar_torneio(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
+    
+    # Verificação de autorização: usuário é o dono?
+    userId = session.get('user_id')
+    urls_torneios = db.filtrar_campeonatos(userId)
+    if torneioUrl not in urls_torneios:
+        return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+    
     try:
         api.finalizar_torneio(torneioUrl)
 
