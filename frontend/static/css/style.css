@@ -711,35 +711,51 @@ select.entrada-campo { cursor: pointer; }
 }
 
 
-/* Banner de campeão - Gradiente Metálico Premium */
+/* =============================================================================
+   BANNER DE CAMPEÃO — PURE MINIMALIST (100% FIEL AO SEU STYLE.CSS)
+   ============================================================================= */
 .banner-campeao {
-    background: linear-gradient(135deg, #1e1e1b 0%, #111110 100%);
-    border: 1px solid rgba(255, 183, 0, 0.37);
+    /* Usa estritamente as cores de superfície e base do seu tema escuro */
+    background: linear-gradient(135deg, var(--clr-bg-surface) 0%, var(--clr-bg-base) 100%);
+    
+    /* Borda sutil de 0.5px idêntica ao padrão do seu projeto */
+    border: 0.5px solid var(--clr-border-hover);
     border-radius: var(--radius-md);
-    padding: 35px 20px;
+    padding: 45px 20px;
     text-align: center;
-    margin-bottom: 25px;
-    box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.05);
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-card);
+    animation: cardEntrada var(--dur-normal) var(--ease-out) both;
 }
 
 .banner-campeao h2 {
-    margin: 0 0 6px 0;
-    color: rgba(153, 146, 127, 0.8);
+    margin: 0 0 10px 0;
+    /* Usa o tom cinza secundário do seu próprio style.css */
+    color: var(--clr-text-secondary);
     font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 #nome-do-campeao {
     font-family: var(--font-display);
-    font-size: 2.8rem;
-    font-weight: 600;
-    background: linear-gradient(180deg, #6b6a66 0%, #302e29 100%);
+    font-size: 3.4rem; /* Tamanho imponente para destacar a Playfair Display */
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    
+    /* Gradiente de alto contraste: do Branco Puro para o tom claro principal do seu tema */
+    background: linear-gradient(180deg, #ffffff 0%, var(--clr-text-primary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 4px rgba(29, 28, 28, 0.3));
+    
+    /* Sombra suave que resolve o sumiço do texto visto na image_dee41b.png */
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+    display: inline-block;
 }
+
 
 
 
