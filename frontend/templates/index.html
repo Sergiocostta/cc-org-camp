@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CC-ORG-CAMP</title>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +23,7 @@
         </header>
     
         <form id="formulario-login" class="formulario-login">
+            <div id="mensagem-erro" class="mensagem-erro" style="display:none; margin-bottom:16px;"></div>
 
             <div class="grupo-campo">
                 <label for="email" class="legenda-campo">Email </label>
@@ -58,6 +60,7 @@
     </section>
    </main>
    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+   <script src="{{ url_for('static', filename='js/tema.js') }}"></script>
     
 </body>
 </html>

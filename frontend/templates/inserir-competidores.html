@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <style>
+        <style>
         .lista-inserir-dinamica { display:flex; flex-direction:column; gap:10px; }
         .linha-competidor { display:flex; align-items:center; gap:10px; }
         .num-competidor { font-family:var(--font-mono); font-size:12px; color:var(--clr-text-muted); min-width:24px; text-align:right; }
@@ -20,7 +20,9 @@
         .sorteio-item { display:flex; align-items:center; gap:12px; font-size:14px; padding:8px 12px; border-radius:var(--radius-sm); background:var(--clr-bg-base); }
         .sorteio-seed { font-family:var(--font-mono); font-size:11px; color:var(--clr-text-muted); min-width:20px; }
     </style>
+
 </head>
+
 <body>
     <header class="cabecalho-topo">
         <div class="logo-sistema"><h2>CC-ORG-CAMP</h2></div>
@@ -62,5 +64,6 @@
     </main>
     
 <script src="{{ url_for('static', filename='js/add-competidores.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tema.js') }}"></script>
 </body>
 </html>
