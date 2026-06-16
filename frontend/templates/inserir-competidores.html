@@ -46,7 +46,25 @@
                 <ul id="lista-competidores">
                 </ul>
                 <div id="inserir-competidores-container" class="lista-inserir-dinamica"></div>
-                <button type="button" class="btn-adicionar" onclick="addCompetidores()">+ Adicionar competidor</button>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <input 
+                        type="text" 
+                        id="nome-competidor" 
+                        class="entrada-campo" 
+                        placeholder="Digite o nome do competidor"
+                        autocomplete="off"
+                        style="flex:1;"
+                    >
+
+                    <button 
+                        type="button" 
+                        class="btn-adicionar" 
+                        onclick="addCompetidores()" 
+                        style="width:auto; padding:9px 14px; margin-top:0;"
+                    >
+                        Adicionar
+                    </button>
+                </div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button type="submit" id="btn-sortear" class="botao-entrar" style="flex:1">Sortear Chaves e Salvar</button>
                     <a href="/home" class="botao-sair" style="display:flex; align-items:center;">Cancelar</a>

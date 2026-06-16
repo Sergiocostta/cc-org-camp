@@ -3,7 +3,6 @@ const url = window.location.pathname.split('/')[2]
 const torneios = JSON.parse(sessionStorage.getItem('torneios'))
 const torneio = torneios.find(t => t.tournament.url === url)
 const lista = document.getElementById('inserir-competidores-container')
-const qtdMax = torneio.tournament.signup_cap || 64
 
 let competidores = []
 
@@ -11,6 +10,7 @@ h1.innerText = torneio.tournament.name
 
 function renderizarLista() {
     lista.innerHTML = ''
+
     competidores.forEach((nome, index) => {
         lista.innerHTML += `
             <div class="linha-competidor">
@@ -22,25 +22,70 @@ function renderizarLista() {
     })
 }
 
+function mostrarErro(mensagem) {
+    const msgErro = document.getElementById('msg-erro')
+    const msgSucesso = document.getElementById('msg-sucesso')
+
+    msgSucesso.style.display = 'none'
+    msgErro.style.display = 'block'
+    msgErro.textContent = mensagem
+}
+
+function mostrarSucesso(mensagem) {
+    const msgErro = document.getElementById('msg-erro')
+    const msgSucesso = document.getElementById('msg-sucesso')
+
+    msgErro.style.display = 'none'
+    msgSucesso.style.display = 'block'
+    msgSucesso.textContent = mensagem
+}
+
 function addCompetidores() {
-    const nome = window.prompt('Digite o nome do atleta:')
-    if (nome && nome.trim()) {
-        competidores.push(nome.trim())
-        renderizarLista()
+    const inputNome = document.getElementById('nome-competidor')
+    const nome = inputNome.value.trim()
+
+    if (!nome) {
+        mostrarErro('Digite o nome do competidor antes de adicionar.')
+        inputNome.focus()
+        return
     }
+
+    const nomeJaExiste = competidores.some(function(competidor) {
+        return competidor.toLowerCase() === nome.toLowerCase()
+    })
+
+    if (nomeJaExiste) {
+        mostrarErro('Esse competidor já foi adicionado.')
+        inputNome.focus()
+        return
+    }
+
+    competidores.push(nome)
+    inputNome.value = ''
+    inputNome.focus()
+
+    renderizarLista()
+    mostrarSucesso('Competidor adicionado com sucesso.')
 }
 
 function removerCompetidor(index) {
     competidores.splice(index, 1)
     renderizarLista()
+    mostrarSucesso('Competidor removido com sucesso.')
 }
+
+document.getElementById('nome-competidor').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault()
+        addCompetidores()
+    }
+})
 
 document.getElementById('formulario-competidores').addEventListener('submit', async function(e) {
     e.preventDefault()
 
     if (competidores.length < 2) {
-        document.getElementById('msg-erro').style.display = 'block'
-        document.getElementById('msg-erro').textContent = 'Adicione pelo menos 2 competidores.'
+        mostrarErro('Adicione pelo menos 2 competidores.')
         return
     }
 
@@ -58,21 +103,19 @@ document.getElementById('formulario-competidores').addEventListener('submit', as
             headers: { 'Content-Type': 'application/json' }
         })
 
-        const dataIniciar = await iniciar.json()
+        await iniciar.json()
 
         if (iniciar.ok) {
             const listaTorneios = JSON.parse(sessionStorage.getItem('torneios'))
             const torneio = listaTorneios.find(t => t.tournament.url === url)
-            
+
             torneio.tournament.state = 'in_progress'
             torneio.tournament.participants = data.participantes
 
             sessionStorage.setItem('torneios', JSON.stringify(listaTorneios))
             window.location.href = `/torneios/${url}`
-            }
-    }
-    else {
-        document.getElementById('msg-erro').style.display = 'block'
-        document.getElementById('msg-erro').textContent = data.message
+        }
+    } else {
+        mostrarErro(data.message)
     }
 })
